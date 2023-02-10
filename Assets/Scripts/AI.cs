@@ -153,7 +153,7 @@ public class AI : MonoBehaviour
     {
         Vector3 Destination = center * destPoint * range;
         NavMeshHit hit;
-        if (NavMesh.Destination(Destination, out hit, 4, NavMesh.AllAreas))
+        if (UnityEngine.AI.NavMesh.SamplePosition(Destination, out hit, 4, NavMesh.AllAreas))
         {
             point = hit.position;
             return true; 
@@ -189,10 +189,10 @@ public class AI : MonoBehaviour
 
     void Wait()
     {
-        if(FindDestPoint())
+        /*if(FindTarget())
         {
             currentState = State.Waiting;
-        }
+        }*/
     }
 
     void Attack()
