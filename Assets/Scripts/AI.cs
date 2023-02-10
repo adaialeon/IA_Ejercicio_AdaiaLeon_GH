@@ -10,6 +10,8 @@ public class AI : MonoBehaviour
         Patrolling,
         Chasing,
         Traveling, 
+        Waiting,
+        Attacking,
     }
 
     State currentState;
@@ -25,6 +27,8 @@ public class AI : MonoBehaviour
     [SerializeField] float visionAngle;
     [SerializeField] [Range(0, 360)]
     public LayerMask obstaclesMask;
+    public Transform[] points;
+    private int destPoint = 0;
 
 
     void Awake()
@@ -39,6 +43,11 @@ public class AI : MonoBehaviour
         currentState = State.Patrolling;
         
         destinationIndex = Random.Range(0, destinationPoints.Length);
+
+        //deberes
+        agent = GetComponent<NavMeshAgent>();
+        agent.autoBraking = false;
+        GotoNextPoint();
     }
 
     // Update is called once per frame
@@ -49,6 +58,7 @@ public class AI : MonoBehaviour
             case State.Patrolling:
                 Patrol();
             break;
+
             case State.Chasing:
                 Chase();
             break;
@@ -59,7 +69,29 @@ public class AI : MonoBehaviour
             case State.Traveling:
                     Travel();
             break;
+
+            case State.Waiting:
+                    Wait();
+            break;
+
+            case State.Attacking:
+                    Attack();
+            break; 
         }
+
+        //deberes
+        if (agent.remainingDistance < 0.5f)
+        GotoNextPoint();
+
+    }
+
+    //deberes
+    void GotoNextPoint() 
+    {
+        if (points.Length == 0)
+        return;
+        agent.destination = points[destPoint].position;
+        destPoint = (destPoint + 1) % points.Length;
     }
 
     /*void Patrol() 
@@ -76,7 +108,7 @@ public class AI : MonoBehaviour
         }
     }*/
 
-    
+    //posición de la IA
     void Patrol() 
     {
         Vector3 randomPosition;
@@ -107,6 +139,7 @@ public class AI : MonoBehaviour
         point = Vector3.zero;
         return false; 
     }
+    
 
     void Travel()
     {
@@ -128,6 +161,22 @@ public class AI : MonoBehaviour
         if(!FindTarget())
         {
             currentState = State.Patrolling;
+        }
+    }
+
+    void Wait()
+    {
+        if(FindTarget())
+        {
+            currentState = State.Waiting;
+        }
+    }
+
+    void Attack()
+    {
+        if(FindTarget())
+        {
+            currentState = State.Attacking;
         }
     }
 
