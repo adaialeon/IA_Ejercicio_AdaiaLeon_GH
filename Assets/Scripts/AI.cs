@@ -19,7 +19,7 @@ public class AI : MonoBehaviour
     NavMeshAgent agent;
 
     public Transform[] destinationPoints;
-    int destinationIndex = 0;
+    //int destinationIndex = 0;
     public Transform player;
     [SerializeField] float visionRange;
     [SerializeField] float patrolRange = 10f; 
@@ -37,12 +37,11 @@ public class AI : MonoBehaviour
 
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         currentState = State.Patrolling;
         
-        destinationIndex = Random.Range(0, destinationPoints.Length);
+        //destinationIndex = Random.Range(0, destinationPoints.Length);
 
         //deberes
         agent = GetComponent<NavMeshAgent>();
@@ -50,7 +49,7 @@ public class AI : MonoBehaviour
         GotoNextPoint();
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         switch(currentState)
@@ -189,10 +188,10 @@ public class AI : MonoBehaviour
 
     void Wait()
     {
-        /*if(FindTarget())
+        if(FindTarget())
         {
             currentState = State.Waiting;
-        }*/
+        }
     }
 
     void Attack()
