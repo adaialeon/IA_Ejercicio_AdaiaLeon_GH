@@ -111,11 +111,19 @@ public class AI : MonoBehaviour
     //posición de la IA
     void Patrol() 
     {
-        Vector3 randomPosition;
+        /*Vector3 randomPosition;
         if(RandomPoint(patrolZone.position, patrolRange, out randomPosition))
         {
             agent.destination = randomPosition; 
             Debug.DrawRay(randomPosition, Vector3.up * 5, Color.blue, 5f);
+        }*/
+
+        //deberes
+        Vector3 destPoint;
+        if(Destination(patrolZone.position, patrolRange, out destPoint))
+        {
+            agent.destination = destPoint; 
+            Debug.DrawRay(destPoint, Vector3.up * 5, Color.blue, 5f);
         }
 
         if(FindTarget())
@@ -126,11 +134,26 @@ public class AI : MonoBehaviour
         currentState = State.Traveling; 
     }
 
-    bool RandomPoint(Vector3 center, float range, out Vector3 point)
+    /*bool RandomPoint(Vector3 center, float range, out Vector3 point)
     {
         Vector3 RandomPoint = center + Random.insideUnitSphere * range;
         NavMeshHit hit;
         if (NavMesh.SamplePosition(RandomPoint, out hit, 4, NavMesh.AllAreas))
+        {
+            point = hit.position;
+            return true; 
+        }
+
+        point = Vector3.zero;
+        return false; 
+    }*/
+
+    //deberes
+    bool Destination(Vector3 center, float range, out Vector3 point)
+    {
+        Vector3 Destination = center * destPoint * range;
+        NavMeshHit hit;
+        if (NavMesh.Destination(Destination, out hit, 4, NavMesh.AllAreas))
         {
             point = hit.position;
             return true; 
@@ -166,7 +189,7 @@ public class AI : MonoBehaviour
 
     void Wait()
     {
-        if(FindTarget())
+        if(FindDestPoint())
         {
             currentState = State.Waiting;
         }
