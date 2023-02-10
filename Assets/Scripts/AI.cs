@@ -93,22 +93,22 @@ public class AI : MonoBehaviour
         destPoint = (destPoint + 1) % points.Length;
     }
 
-    /*void Patrol() 
+    void Patrol() 
     {
-        agent.destination = destinationPoints[destinationIndex].position;
+        /*agent.destination = destinationPoints[destinationIndex].position;
         if(Vector3.Distance(transform.position, destinationPoints[destinationIndex].position) < 1)
         {
         destinationIndex = Random.Range(0, destinationPoints.Length);
-        }
+        }*/
 
         if(Vector3.Distance(transform.position, player.position) < visionRange)
         {
             currentState = State.Chasing;
         }
-    }*/
+    }
 
     //posición de la IA
-    void Patrol() 
+    void Patrol2() 
     {
         /*Vector3 randomPosition;
         if(RandomPoint(patrolZone.position, patrolRange, out randomPosition))
@@ -129,6 +129,11 @@ public class AI : MonoBehaviour
         {
             currentState = State.Chasing;
         }
+
+        /*if(FindPoint())
+        {
+            currentState = State.Wait;
+        }*/
 
         currentState = State.Traveling; 
     }
@@ -188,10 +193,11 @@ public class AI : MonoBehaviour
 
     void Wait()
     {
-        if(FindTarget())
+        /*if(FindPoint())
         {
-            currentState = State.Waiting;
-        }
+            currentState = State.Waiting; 
+            
+        }*/
     }
 
     void Attack()
