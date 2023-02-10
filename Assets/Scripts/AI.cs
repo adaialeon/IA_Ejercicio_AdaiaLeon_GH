@@ -29,6 +29,8 @@ public class AI : MonoBehaviour
     public LayerMask obstaclesMask;
     public Transform[] points;
     private int destPoint = 0;
+    private float remaining = 5f;
+    //public float countdown = 5.0f;
 
 
     void Awake()
@@ -78,6 +80,12 @@ public class AI : MonoBehaviour
             break; 
         }
 
+        /*countdown -= Time.deltaTime;
+        if(countdown <= 0.0f)
+        {
+
+        }*/
+
         //deberes
         if (agent.remainingDistance < 0.5f)
         GotoNextPoint();
@@ -91,6 +99,8 @@ public class AI : MonoBehaviour
         return;
         agent.destination = points[destPoint].position;
         destPoint = (destPoint + 1) % points.Length;
+
+        currentState = State.Waiting;
     }
 
     void Patrol() 
@@ -105,6 +115,8 @@ public class AI : MonoBehaviour
         {
             currentState = State.Chasing;
         }
+
+        //currentState = State.Waiting;
     }
 
     //posición de la IA
@@ -193,12 +205,29 @@ public class AI : MonoBehaviour
 
     void Wait()
     {
+        remaining -= Time.deltaTime;
+
+        if(remaining <= 0)
+        {
+            currentState = State.Patrolling;
+
+            remaining = 5;
+        }   
+    }
+
+    /*void Wait()
+    {
+        if(FindTarget())
+        {
+            /*countdown = 5.0f;*/
+        
+        
         /*if(FindPoint())
         {
             currentState = State.Waiting; 
             
-        }*/
-    }
+        }
+    }*/
 
     void Attack()
     {
