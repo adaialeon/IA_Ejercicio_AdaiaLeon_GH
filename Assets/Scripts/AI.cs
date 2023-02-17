@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class AI : MonoBehaviour
 {
-    enum State
+    public enum State
     {
         Patrolling,
         Chasing,
@@ -14,12 +14,11 @@ public class AI : MonoBehaviour
         Attacking,
     }
 
-    State currentState;
+    public State currentState;
 
     NavMeshAgent agent;
 
     public Transform[] destinationPoints;
-    //int destinationIndex = 0;
     public Transform player;
     [SerializeField] float visionRange;
     [SerializeField] float patrolRange = 10f; 
@@ -29,8 +28,7 @@ public class AI : MonoBehaviour
     public LayerMask obstaclesMask;
     public Transform[] points;
     private int destPoint = 0;
-    private float remaining = 5f;
-    //public float countdown = 5.0f;
+    public float countdown = 5.0f;
 
 
     void Awake()
@@ -42,10 +40,6 @@ public class AI : MonoBehaviour
     void Start()
     {
         currentState = State.Patrolling;
-        
-        //destinationIndex = Random.Range(0, destinationPoints.Length);
-
-        //deberes
         agent = GetComponent<NavMeshAgent>();
         agent.autoBraking = false;
         GotoNextPoint();
@@ -63,9 +57,6 @@ public class AI : MonoBehaviour
             case State.Chasing:
                 Chase();
             break;
-            default:
-                Chase();
-            break;
 
             case State.Traveling:
                     Travel();
@@ -78,58 +69,37 @@ public class AI : MonoBehaviour
             case State.Attacking:
                     Attack();
             break; 
+
+            default:
+                Chase();
+            break;
         }
-
-        /*countdown -= Time.deltaTime;
-        if(countdown <= 0.0f)
-        {
-
-        }*/
-
-        //deberes
-        if (agent.remainingDistance < 0.5f)
-        GotoNextPoint();
 
     }
 
-    //deberes
     void GotoNextPoint() 
     {
         if (points.Length == 0)
         return;
         agent.destination = points[destPoint].position;
         destPoint = (destPoint + 1) % points.Length;
-
-        currentState = State.Waiting;
     }
 
     void Patrol() 
     {
-        /*agent.destination = destinationPoints[destinationIndex].position;
-        if(Vector3.Distance(transform.position, destinationPoints[destinationIndex].position) < 1)
-        {
-        destinationIndex = Random.Range(0, destinationPoints.Length);
-        }*/
+        if (agent.remainingDistance < 0.5f)
+        GotoNextPoint();
 
         if(Vector3.Distance(transform.position, player.position) < visionRange)
         {
             currentState = State.Chasing;
         }
 
-        //currentState = State.Waiting;
+        currentState = State.Traveling;
     }
 
-    //posición de la IA
     void Patrol2() 
     {
-        /*Vector3 randomPosition;
-        if(RandomPoint(patrolZone.position, patrolRange, out randomPosition))
-        {
-            agent.destination = randomPosition; 
-            Debug.DrawRay(randomPosition, Vector3.up * 5, Color.blue, 5f);
-        }*/
-
-        //deberes
         Vector3 destPoint;
         if(Destination(patrolZone.position, patrolRange, out destPoint))
         {
@@ -142,29 +112,9 @@ public class AI : MonoBehaviour
             currentState = State.Chasing;
         }
 
-        /*if(FindPoint())
-        {
-            currentState = State.Wait;
-        }*/
-
         currentState = State.Traveling; 
     }
 
-    /*bool RandomPoint(Vector3 center, float range, out Vector3 point)
-    {
-        Vector3 RandomPoint = center + Random.insideUnitSphere * range;
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(RandomPoint, out hit, 4, NavMesh.AllAreas))
-        {
-            point = hit.position;
-            return true; 
-        }
-
-        point = Vector3.zero;
-        return false; 
-    }*/
-
-    //deberes
     bool Destination(Vector3 center, float range, out Vector3 point)
     {
         Vector3 Destination = center * destPoint * range;
@@ -184,7 +134,7 @@ public class AI : MonoBehaviour
     {
         if(agent.remainingDistance <= 0.2)
         {
-            currentState = State.Patrolling;
+            currentState = State.Waiting;
         }
 
         if(FindTarget())
@@ -205,29 +155,17 @@ public class AI : MonoBehaviour
 
     void Wait()
     {
-        remaining -= Time.deltaTime;
+        countdown -= Time.deltaTime;
 
-        if(remaining <= 0)
+        if (!FindTarget())
         {
-            currentState = State.Patrolling;
-
-            remaining = 5;
-        }   
-    }
-
-    /*void Wait()
-    {
-        if(FindTarget())
-        {
-            /*countdown = 5.0f;*/
-        
-        
-        /*if(FindPoint())
-        {
-            currentState = State.Waiting; 
-            
+            if(countdown <= 0)
+            {
+                currentState = State.Patrolling;
+                countdown = 5;
+            }  
         }
-    }*/
+    }
 
     void Attack()
     {

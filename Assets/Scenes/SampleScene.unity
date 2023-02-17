@@ -22486,6 +22486,7 @@ MonoBehaviour:
   - {fileID: 1368580887}
   - {fileID: 2052685448}
   - {fileID: 409710484}
+  countdown: 5
 --- !u!136 &1227909059
 CapsuleCollider:
   m_ObjectHideFlags: 0
